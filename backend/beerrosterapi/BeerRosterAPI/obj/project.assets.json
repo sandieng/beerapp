@@ -12314,11 +12314,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\VueVaults\\BeerRosterAPI\\BeerRosterAPI\\BeerRosterAPI.csproj",
+      "projectUniqueName": "C:\\VueVaults\\beerapp\\backend\\beerrosterapi\\BeerRosterAPI\\BeerRosterAPI.csproj",
       "projectName": "BeerRosterAPI",
-      "projectPath": "E:\\VueVaults\\BeerRosterAPI\\BeerRosterAPI\\BeerRosterAPI.csproj",
+      "projectPath": "C:\\VueVaults\\beerapp\\backend\\beerrosterapi\\BeerRosterAPI\\BeerRosterAPI.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "E:\\VueVaults\\BeerRosterAPI\\BeerRosterAPI\\obj\\",
+      "outputPath": "C:\\VueVaults\\beerapp\\backend\\beerrosterapi\\BeerRosterAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
