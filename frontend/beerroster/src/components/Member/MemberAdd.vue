@@ -96,7 +96,7 @@
           })
 
         // Send welcome email
-        let email = {toEmail: 'seng@johnslyng.com.au', subject: 'Hi new member', message: 'Welcome to Beer Roster'};
+        let email = {toEmail: 'targetEmail@beerlover.com.au', subject: 'Hi new member', message: 'Welcome to Beer Roster'};
         emailService.send(email)
          .then(() => {
             this.showSnackbar = true;
