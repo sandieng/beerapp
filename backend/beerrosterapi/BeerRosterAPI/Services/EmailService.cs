@@ -10,7 +10,7 @@ namespace BeerRosterAPI.Services
         public async Task<Response> Send(EmailDto email)
         {
             //var apiKey = Environment.GetEnvironmentVariable("NAME_OF_THE_ENVIRONMENT_VARIABLE_FOR_YOUR_SENDGRID_KEY");
-            var apiKey = "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";
+            var apiKey = "SE.xCin_4MsQ9qYWg1GPyHkQw.me62B3CKBr4eEImR7tPBJ27da58IC838QH1r4nZ_DqM";
 
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("test@example.com", "Example User");
