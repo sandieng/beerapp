@@ -61,10 +61,12 @@
       },
 
       created() {
-      if (!this.$store.getters.isUserLoggedIn) {
-        this.$router.push('/Login');
-        return;
-      }
+        // Centralised user login in App.vue
+      
+        // if (!this.$store.getters.isUserLoggedIn) {
+        //   this.$router.push('/Login');
+        //   return;
+        // }
     }
    }
 </script>

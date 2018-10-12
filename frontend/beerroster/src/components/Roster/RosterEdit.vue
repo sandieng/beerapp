@@ -111,10 +111,12 @@
 
     //cool, awesome I like BEER "awe super dooper cold ( I like cold stuff like icy pole, " yummy" ). Plus West Coast Eagles won the grand finals.
      created() {
-      if (!this.$store.getters.isUserLoggedIn) {
-        this.$router.push('/Login');
-        return;
-      }
+       // Centralised user login in App.vue
+      
+      // if (!this.$store.getters.isUserLoggedIn) {
+      //   this.$router.push('/Login');
+      //   return;
+      // }
 
       rosterService.list()
          .then((response) => {

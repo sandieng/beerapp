@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VeeValidate from 'vee-validate'
+
 import './plugins/vuetify'
 import App from './App.vue'
 import store from './store';

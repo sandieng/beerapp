@@ -6,7 +6,6 @@
       >
       </v-carousel-item>
     </v-carousel>
-
     <v-data-table
         :headers="headers"
         :items="roster"
@@ -54,7 +53,7 @@
     },
     beforeMount() {
       if (!this.$store.getters.isUserLoggedIn) {
-            this.$router.push('/login');
+            // this.$router.push('/login');
       } else {
         let uri = 'http://localhost:60908/api/roster';
 
