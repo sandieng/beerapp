@@ -34,6 +34,7 @@ namespace BeerRosterAPI.Controllers
         {
             var members = _memberService.GetAll().ToList();
             var results = Mapper.Map<IEnumerable<MemberVM>>(members);
+
             return Ok(results);
         }
 
@@ -44,13 +45,15 @@ namespace BeerRosterAPI.Controllers
             var foundMember = _memberService.GetByEmail(email);
             var result = Mapper.Map<MemberVM>(foundMember);
             if (foundMember != null)
-                return Ok(foundMember);
-            else
             {
-                _response.Message = $"Can't find the member with the email: {email}";
-                return NotFound(_response);
+                var jwtToken = JwtService.UpdateJwt(foundMember.Email);
 
+                result.Token = jwtToken.ToString();
+                return Ok(result);
             }
+
+            _response.Message = $"Can't find the member with the email: {email}";
+            return NotFound(_response);
         }
 
         // POST api/member
@@ -75,7 +78,9 @@ namespace BeerRosterAPI.Controllers
             var newMember = Mapper.Map<Member>(member);
             _memberService.Save(newMember);
 
-            return Ok();
+            var jwtToken = JwtService.GenerateJwt(member.Email);
+
+            return Ok(jwtToken);
         }
 
         // POST api/member
@@ -97,14 +102,17 @@ namespace BeerRosterAPI.Controllers
 
         // PUT api/member/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] MemberVM member)
+        public ActionResult Put(int id, [FromBody] MemberVM member)
         {
             var updateMember = Mapper.Map<Member>(member);
             _memberService.Update(updateMember);
+
+            var jwtToken = JwtService.UpdateJwt(member.Email);
+            return Ok(jwtToken);
         }
 
         [HttpPost("{id}")]
-        public void Post(int id, [FromBody] JObject member)
+        public ActionResult Post(int id, [FromBody] JObject member)
         {
             var updateMember = member.ToObject<Member>();
             var currentMember = _memberService.GetById(updateMember.ID);
@@ -113,6 +121,9 @@ namespace BeerRosterAPI.Controllers
             currentMember.DateJoined = updateMember.DateJoined;
 
             _memberService.Update(currentMember);
+
+            var jwtToken = JwtService.UpdateJwt(updateMember.Email);
+            return Ok(jwtToken);
         }
 
         // DELETE api/member/5

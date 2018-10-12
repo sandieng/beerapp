@@ -4,13 +4,13 @@ const emailService = {
   send(email) {
     let url = 'http://localhost:60908/api/email/send'
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.post(url, email)
       .then((response) => {
         resolve(response);
         })
         .catch((error) => {
-          return error;
+          reject(error);
         });
     })
   },

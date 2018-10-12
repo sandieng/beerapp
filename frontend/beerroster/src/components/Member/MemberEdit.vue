@@ -112,6 +112,7 @@
 
         emailService.search(this.email)
            .then((response) => {
+            window.localStorage.setItem('jwtToken', response.data.token);
             this.showSnackbar = true;
             this.showInfo = 'Member\'s data retrieved.';
             this.id = response.data.id;
@@ -134,6 +135,7 @@
         let member = {id: this.id, firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password, dateJoined: this.dateJoined, isActive: this.isActive};
         memberService.update(member)
           .then((response) => {
+              window.localStorage.setItem('jwtToken', response.data);
               this.showSnackbar = true;      
               this.showInfo = 'Member\'s data updated.';
             })

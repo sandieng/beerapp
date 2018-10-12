@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeerRosterAPI.ViewModels
 {
-    public class MemberVM
+    public class MemberVM : TokenVM
     {
         public int ID { get; set; }
 

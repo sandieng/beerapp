@@ -38,8 +38,10 @@ namespace BeerRosterAPI.Controllers
             }
 
             var result = await _emailService.Send(email);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                return Ok(result);
 
-            return Ok(result);
+            return BadRequest(result);
         }
 
     }

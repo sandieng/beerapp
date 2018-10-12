@@ -28,7 +28,7 @@ namespace BeerRosterAPI.Services
             //Some PayLoad that contain information about the  customer
             var payload = new JwtPayload
             {
-               { "userName ", userName},
+               { "userName", userName},
                { "expiryToken", DateTime.UtcNow.AddMinutes(1)},
             };
 
@@ -38,8 +38,16 @@ namespace BeerRosterAPI.Services
 
             // Token to String so you can use it in your client
             var tokenString = handler.WriteToken(secToken);
+            var reversedToken = handler.ReadToken(tokenString);
 
             return tokenString;
+        }
+
+        internal static object UpdateJwt(string userName)
+        {
+            var updatedToken = GenerateJwt(userName);
+
+            return updatedToken;
         }
     }
 }

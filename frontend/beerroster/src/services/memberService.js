@@ -1,11 +1,14 @@
-import axios from 'axios'
+import axios from 'axios';
+
 
 const memberService = {
   save(memberDetails) {
     let url = 'http://localhost:60908/api/member/signup';
 
+    let payloadWithToken = this.attachToken(memberDetails);
+
     return new Promise((resolve, reject) => {
-      axios.post(url, memberDetails)
+      axios.post(url, payloadWithToken)
       .then((response) => {
         resolve(response);
         })
@@ -18,8 +21,10 @@ const memberService = {
   update(updatedMember) {
     let url = `http://localhost:60908/api/member/${updatedMember.id}`;        
 
+    let payloadWithToken = this.attachToken(updatedMember);
+
     return new Promise((resolve, reject) => {
-      axios.post(url, updatedMember)
+      axios.post(url, payloadWithToken)
       .then((response) => {
         resolve(response);
         })
@@ -41,6 +46,12 @@ const memberService = {
           reject(error);
         });
     })
+  },
+
+  attachToken(model) {
+    let token =  { token : window.localStorage.getItem('jwtToken') };
+    let updatedModel = Object.assign({}, token, model);
+    return updatedModel;
   }
 }
 
