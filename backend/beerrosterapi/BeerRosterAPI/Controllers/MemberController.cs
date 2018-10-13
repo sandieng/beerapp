@@ -120,6 +120,8 @@ namespace BeerRosterAPI.Controllers
             currentMember.FirstName = updateMember.FirstName;
             currentMember.LastName = updateMember.LastName;
             currentMember.DateJoined = updateMember.DateJoined;
+            currentMember.IsActive = updateMember.IsActive;
+            currentMember.Email = updateMember.Email;
 
             _memberService.Update(currentMember);
 

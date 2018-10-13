@@ -153,6 +153,15 @@
       //   this.$router.push('/Login');
       //   return;
       // }
+    },
+
+    beforeRouteLeave(to, from, next) {
+      if (this.memberFound) {
+        const response = confirm('You have not saved your changes. Are you sure?');
+        next(response);
+      } else {
+        next(true);
+      }
     }
   }
 </script>
