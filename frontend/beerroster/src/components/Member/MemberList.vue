@@ -44,7 +44,6 @@
           { text: 'Active Member', value: 'isActive' }
         ],
         memberList: [],    
-        isLoggedIn: false
       }
     },
     //cool, awesome I like BEER "awe super dooper cold ( I like cold stuff like icy pole, " yummy" ). Plus West Coast Eagles won the grand finals.

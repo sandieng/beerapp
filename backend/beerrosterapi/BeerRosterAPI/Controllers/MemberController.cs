@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
 namespace BeerRosterAPI.Controllers
@@ -34,7 +35,7 @@ namespace BeerRosterAPI.Controllers
         {
             var members = _memberService.GetAll().ToList();
             var results = Mapper.Map<IEnumerable<MemberVM>>(members);
-
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
             return Ok(results);
         }
 
@@ -46,7 +47,7 @@ namespace BeerRosterAPI.Controllers
             var result = Mapper.Map<MemberVM>(foundMember);
             if (foundMember != null)
             {
-                var jwtToken = JwtService.UpdateJwt(foundMember.Email);
+                var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
                 result.Token = jwtToken.ToString();
                 return Ok(result);
@@ -107,7 +108,7 @@ namespace BeerRosterAPI.Controllers
             var updateMember = Mapper.Map<Member>(member);
             _memberService.Update(updateMember);
 
-            var jwtToken = JwtService.UpdateJwt(member.Email);
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
             return Ok(jwtToken);
         }
 
@@ -122,7 +123,7 @@ namespace BeerRosterAPI.Controllers
 
             _memberService.Update(currentMember);
 
-            var jwtToken = JwtService.UpdateJwt(updateMember.Email);
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
             return Ok(jwtToken);
         }
 

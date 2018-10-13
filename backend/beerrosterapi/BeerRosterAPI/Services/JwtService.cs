@@ -38,16 +38,31 @@ namespace BeerRosterAPI.Services
 
             // Token to String so you can use it in your client
             var tokenString = handler.WriteToken(secToken);
-            var reversedToken = handler.ReadToken(tokenString);
 
             return tokenString;
         }
 
-        internal static object UpdateJwt(string userName)
+        internal static string UpdateJwt(string bearerToken)
         {
-            var updatedToken = GenerateJwt(userName);
+            // Extract bearer token
+            if (bearerToken != null)
+            {
+                var decodedToken = DecodeJwt(bearerToken);
+                var userName = decodedToken.Payload["userName"].ToString();
+                var updatedToken = GenerateJwt(userName);
 
-            return updatedToken;
+                return updatedToken;
+            }
+
+            return "";
+        }
+
+        internal static JwtSecurityToken DecodeJwt(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var reversedToken = handler.ReadToken(token);
+
+            return (JwtSecurityToken) reversedToken;
         }
     }
 }

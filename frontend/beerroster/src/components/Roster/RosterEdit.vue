@@ -143,7 +143,9 @@
         let ok = confirm('Are you sure you want to delete this roster?') && this.rosterList.splice(index, 1);
         if (ok) {
           rosterService.delete(roster.id)
-            .then(() => {
+            .then((response) => {
+                window.localStorage.setItem('jwtToken', response.data);
+
                 this.showSnackbar = true;      
                 this.showInfo = 'Roster\'s deleted.';
               })
@@ -161,7 +163,9 @@
           // Update change in the backend
           let member = {id: this.editedItem.memberID, firstName: this.editedItem.firstName, lastName: this.editedItem.lastName, dateJoined: this.editedItem.dateJoined};
           memberService.update(member)
-           .then(() => {
+           .then((response) => {
+                window.localStorage.setItem('jwtToken', response.data);
+
                 this.showSnackbar = true;      
                 this.showInfo = 'Member\'s data updated.';
               })
@@ -172,7 +176,9 @@
 
           let roster = {id: this.editedItem.id, memberID: this.editedItem.memberID, rosteredDate: this.editedItem.rosteredDate};
           rosterService.update(roster)
-            .then(() => {
+            .then((response) => {
+                window.localStorage.setItem('jwtToken', response.data);
+
                 this.showSnackbar = true;      
                 this.showInfo = 'Roster\'s data updated.';
               })

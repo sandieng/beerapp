@@ -2,16 +2,16 @@ import axios from 'axios'
 
 // axios.defaults.baseURL = 'http://localhost:60908/api/roster';
 //
-// axios.interceptors.request.use(function(config) {
-// if (typeof window === 'undefined') return config;
-//
-//   const token = window.localStorage.getItem('token');
-//   if (toke) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-
-//   return config;
-// })
+axios.interceptors.request.use(function(config) {
+  if (typeof window === 'undefined') return config;
+  
+    const token = window.localStorage.getItem('jwtToken');
+    if (token) {
+      config.headers.Authorization = token;
+    }
+  
+    return config;
+  })
 
 const rosterService = {
   create(cycle) {
@@ -58,6 +58,7 @@ const rosterService = {
 
   delete(rosterId) {
     let uri = `http://localhost:60908/api/roster/${rosterId}`;
+    
     return new Promise((resolve) => {
       axios.delete(uri)
         .then((response) => {

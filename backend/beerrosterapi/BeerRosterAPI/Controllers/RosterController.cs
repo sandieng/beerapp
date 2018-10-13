@@ -36,6 +36,7 @@ namespace BeerRosterAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<RosterVM>> Get()
         {
+
             var roster = _rosterService.GetAll().ToList();
             var result = Mapper.Map<List<RosterVM>>(roster);
       
@@ -73,8 +74,9 @@ namespace BeerRosterAPI.Controllers
             var scheduler = new Scheduler();
             var beerRoster = scheduler.CreateRoster(members, lastRosteredDate, int.Parse(numberOfCycles["cycle"].Value.ToString()));
             _rosterService.Save(beerRoster);
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
-            return Ok();
+            return Ok(jwtToken);
         }
 
         // POST api/roster/create
@@ -102,13 +104,15 @@ namespace BeerRosterAPI.Controllers
             var scheduler = new Scheduler();
             var beerRoster = scheduler.CreateRoster(newMembers, lastRosteredDate);
             _rosterService.Save(beerRoster);
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
-            return Ok();
+
+            return Ok(jwtToken);
         }
 
         // PUT api/roster/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] RosterDto roster)
+        public ActionResult Put(int id, [FromBody] RosterDto roster)
         {
             // var updateRoster = Mapper.Map<Roster>(roster);
             var updateRoster = new Roster
@@ -119,14 +123,20 @@ namespace BeerRosterAPI.Controllers
             };
 
             _rosterService.Update(updateRoster);
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+
+            return Ok(jwtToken);
         }
 
         // DELETE api/roster/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
             var deleteRoster = _rosterService.GetById(id);
             _rosterService.Delete(deleteRoster);
+
+            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            return Ok(jwtToken);
         }
     }
 }
