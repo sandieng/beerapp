@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace BeerRosterAPI
 {
@@ -58,6 +61,9 @@ namespace BeerRosterAPI
 
             app.UseHttpsRedirection();
             app.UseCors("AllowSpecificOrigin");
+
+            app.UseMiddleware<JwtMiddleware>();
+
             app.UseMvc();
 
             // AutoMapper
@@ -77,9 +83,8 @@ namespace BeerRosterAPI
                     .ForMember(d => d.Email, opt => opt.MapFrom(s => s.Member.Email))
                     .ForMember(d => d.DateJoined, opt => opt.MapFrom(s => s.Member.DateJoined))
                     .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.Member.IsActive));
-
-
             });
+
         }
     }
 }

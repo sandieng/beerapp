@@ -8,6 +8,7 @@ namespace BeerRosterAPI.Services
     public class JwtService
     {
         private const string _key = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
+        private static string _updatedJwtToken = "";
 
         public static string GenerateJwt(string userName)
         {
@@ -29,7 +30,7 @@ namespace BeerRosterAPI.Services
             var payload = new JwtPayload
             {
                { "userName", userName},
-               { "expiryToken", DateTime.UtcNow.AddMinutes(1)},
+               { "expiryToken", DateTime.UtcNow.AddMinutes(10)},
             };
 
             //
@@ -37,9 +38,9 @@ namespace BeerRosterAPI.Services
             var handler = new JwtSecurityTokenHandler();
 
             // Token to String so you can use it in your client
-            var tokenString = handler.WriteToken(secToken);
+            _updatedJwtToken = handler.WriteToken(secToken);
 
-            return tokenString;
+            return _updatedJwtToken;
         }
 
         internal static string UpdateJwt(string bearerToken)
@@ -63,6 +64,11 @@ namespace BeerRosterAPI.Services
             var reversedToken = handler.ReadToken(token);
 
             return (JwtSecurityToken) reversedToken;
+        }
+
+        internal static string GetUpdatedJwt()
+        {
+            return _updatedJwtToken;
         }
     }
 }

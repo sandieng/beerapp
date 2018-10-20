@@ -60,7 +60,8 @@
         .then((response) => {
             this.showSnackbar = true;
             this.showInfo = 'Member list retrieved.';
-            this.memberList = response.data;
+            this.memberList = response.data.payload;
+             window.localStorage.setItem('jwtToken', response.data.token);
           })
           .catch((error) => {
             this.showSnackbar = true;

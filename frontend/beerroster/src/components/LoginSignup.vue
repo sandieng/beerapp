@@ -167,7 +167,7 @@
           let signup = {firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password};
           memberService.save(signup)
             .then((response) => {
-            window.localStorage.setItem('jwtToken', response.data);
+            window.localStorage.setItem('jwtToken', response.data.token);
 
               this.showSnackbar = true; 
               this.showInfo = 'Sign up successful.';
@@ -179,6 +179,20 @@
               this.showSnackbar = true;
               this.showInfo = error.response.data.message;
             });
+
+            // Send welcome email
+            let email = {toEmail: 'targetEmail@beerlover.com.au', subject: 'Hi new member', message: 'Welcome to Beer Roster'};
+            emailService.send(email)
+            .then((response) => {
+                window.localStorage.setItem('jwtToken', response.data.token);
+
+                this.showSnackbar = true;
+                this.showInfo = 'Welcome email sent to the new member successfully.'
+              })
+              .catch(() => {
+                this.showSnackbar = true;
+                this.showInfo = 'Failed to send welcome email to the new member.';
+              })
         },
 
         cancelSignup() {
@@ -196,7 +210,7 @@
 
           loginService.login(credentials)
              .then((response) => {
-              window.localStorage.setItem('jwtToken', response.data);
+              window.localStorage.setItem('jwtToken', response.data.token);
               //this.$store.commit('login');
               this.$store.dispatch('login');
               this.showSnackbar = false;      

@@ -97,13 +97,14 @@
         validEmailError: false,
         showSnackbar: false,
         showInfo: '',
-        memberFound: false
+        memberFound: false,
+        alreadySaved: false
       }
     },
     methods: {
       searchMember(email) {
         // Ensure email is supplied
-        if (!this.email) {
+        if (!email) {
           this.showSnackbar = true;
           this.showInfo = 'Can\'t search without a valid email.';
           this.memberFound = false;
@@ -115,14 +116,15 @@
             window.localStorage.setItem('jwtToken', response.data.token);
             this.showSnackbar = true;
             this.showInfo = 'Member\'s data retrieved.';
-            this.id = response.data.id;
-            this.firstName = response.data.firstName;
-            this.lastName = response.data.lastName;
-            this.email = response.data.email;
-            this.password = response.data.password;
-            this.dateJoined = response.data.dateJoined;
-            this.isActive = response.data.isActive;
+            this.id = response.data.payload[0].id;
+            this.firstName = response.data.payload[0].firstName;
+            this.lastName = response.data.payload[0].lastName;
+            this.email = response.data.payload[0].email;
+            this.password = response.data.payload[0].password;
+            this.dateJoined = response.data.payload[0].dateJoined;
+            this.isActive = response.data.payload[0].isActive;
             this.memberFound = true;
+            this.alreadySaved = false;
           })
           .catch((error) => {
             this.showSnackbar = true;
@@ -135,9 +137,10 @@
         let member = {id: this.id, firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password, dateJoined: this.dateJoined, isActive: this.isActive};
         memberService.update(member)
           .then((response) => {
-              window.localStorage.setItem('jwtToken', response.data);
+              window.localStorage.setItem('jwtToken', response.data.token);
               this.showSnackbar = true;      
               this.showInfo = 'Member\'s data updated.';
+              this.alreadySaved = true;
             })
             .catch((showSnackbar) => {
               this.showSnackbar = true;
@@ -156,7 +159,7 @@
     },
 
     beforeRouteLeave(to, from, next) {
-      if (this.memberFound) {
+      if (this.memberFound && !this.alreadySaved) {
         const response = confirm('You have not saved your changes. Are you sure?');
         next(response);
       } else {

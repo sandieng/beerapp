@@ -1,5 +1,4 @@
-﻿using BeerRosterAPI.DTOs;
-using BeerRosterAPI.Services;
+﻿using BeerRosterAPI.Services;
 using BeerRosterAPI.ViewModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
@@ -15,21 +14,21 @@ namespace BeerRosterAPI.Controllers
     {
         private IHostingEnvironment _hostingEnvironment;
         private IEmailService _emailService;
-        private ResponseVM _response;
+        private ResponseVM<EmailVM> _response;
             
 
         public EmailController(IHostingEnvironment environment, IEmailService emailService)
         {
             _hostingEnvironment = environment;
             _emailService = emailService;
-            _response = new ResponseVM();
+            _response = new ResponseVM<EmailVM>();
         }
 
   
         // POST api/email/send
         [HttpPost]
         [Route("send")]
-        public async Task<ActionResult> SendAsync([FromBody] EmailDto email)
+        public async Task<ActionResult> SendAsync([FromBody] EmailVM email)
         {
             if (!ModelState.IsValid)
             {
@@ -38,11 +37,11 @@ namespace BeerRosterAPI.Controllers
             }
 
             var result = await _emailService.Send(email);
+            _response.Token = JwtService.GetUpdatedJwt();
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
-                return Ok(result);
+                return Ok(_response);
 
-            return BadRequest(result);
+            return BadRequest(_response);
         }
-
     }
 }

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
 namespace BeerRosterAPI.Controllers
@@ -19,38 +18,46 @@ namespace BeerRosterAPI.Controllers
     {
         private IHostingEnvironment _hostingEnvironment;
         private IMemberService _memberService;
-        private ResponseVM _response;
+        private ResponseVM<MemberVM> _response;
             
 
         public MemberController(IHostingEnvironment environment, IMemberService memberService)
         {
             _hostingEnvironment = environment;
             _memberService = memberService;
-            _response = new ResponseVM();
+            _response = new ResponseVM<MemberVM>();
         }
 
         // GET api/member
         [HttpGet]
-        public ActionResult<IEnumerable<MemberVM>> Get()
+        //public ActionResult Get() OR BE SPECIFIC With return type
+        public ActionResult<ResponseVM<MemberVM>> Get()
         {
             var members = _memberService.GetAll().ToList();
-            var results = Mapper.Map<IEnumerable<MemberVM>>(members);
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            return Ok(results);
+            var results = Mapper.Map<List<MemberVM>>(members);
+            // var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            var jwtToken = JwtService.GetUpdatedJwt();
+            _response.Token = jwtToken;
+            _response.Payload = results;
+            return Ok(_response);
         }
 
         // GET api/member/atomy@gmail.com
         [HttpGet("{email}")]
-        public ActionResult<MemberVM> Get(string email)
+        //public ActionResult Get(string email) OR BE SPECIFIC with return type
+        public ActionResult<ResponseVM<MemberVM>> Get(string email)
         {
             var foundMember = _memberService.GetByEmail(email);
             var result = Mapper.Map<MemberVM>(foundMember);
             if (foundMember != null)
             {
-                var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+                // var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
-                result.Token = jwtToken.ToString();
-                return Ok(result);
+                //result.Token = jwtToken.ToString();
+                var jwtToken = JwtService.GetUpdatedJwt();
+                _response.Payload = new List<MemberVM> { result };
+                _response.Token = jwtToken.ToString();
+                return Ok(_response);
             }
 
             _response.Message = $"Can't find the member with the email: {email}";
@@ -80,8 +87,9 @@ namespace BeerRosterAPI.Controllers
             _memberService.Save(newMember);
 
             var jwtToken = JwtService.GenerateJwt(member.Email);
+            _response.Token = jwtToken;
 
-            return Ok(jwtToken);
+            return Ok(_response);
         }
 
         // POST api/member
@@ -94,7 +102,8 @@ namespace BeerRosterAPI.Controllers
             if (found != null && found.Password == member.Password)
             {
                 var jwtToken = JwtService.GenerateJwt(member.Email);
-                return Ok(jwtToken);
+                _response.Token = jwtToken;
+                return Ok(_response);
             }
 
             _response.Message = "Invalid email or password";
@@ -108,8 +117,10 @@ namespace BeerRosterAPI.Controllers
             var updateMember = Mapper.Map<Member>(member);
             _memberService.Update(updateMember);
 
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            return Ok(jwtToken);
+            //var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            var jwtToken = JwtService.GetUpdatedJwt();
+            _response.Token = jwtToken;
+            return Ok(_response);
         }
 
         [HttpPost("{id}")]
@@ -125,8 +136,10 @@ namespace BeerRosterAPI.Controllers
 
             _memberService.Update(currentMember);
 
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            return Ok(jwtToken);
+            //var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            var jwtToken = JwtService.GetUpdatedJwt();
+            _response.Token = jwtToken;
+            return Ok(_response);
         }
 
         // DELETE api/member/5

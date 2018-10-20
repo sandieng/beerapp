@@ -1,14 +1,12 @@
-using BeerRosterAPI.DTOs;
+using BeerRosterAPI.ViewModels;
 using SendGrid;
-using SendGrid.Helpers.Mail;
-using System;
 using System.Threading.Tasks;
 
 namespace BeerRosterAPI.Services
 {
     public class EmailService : IEmailService
     {
-        public async Task<Response> Send(EmailDto email)
+        public async Task<Response> Send(EmailVM email)
         {
             //var apiKey = Environment.GetEnvironmentVariable("SendGridKey");
 

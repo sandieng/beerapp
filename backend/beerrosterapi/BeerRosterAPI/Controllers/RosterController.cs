@@ -22,25 +22,27 @@ namespace BeerRosterAPI.Controllers
         private IHostingEnvironment _hostingEnvironment;
         private IRosterService _rosterService;
         private IMemberService _memberService;
-        private ResponseVM _response;
+        private ResponseVM<RosterVM> _response;
 
         public RosterController(IHostingEnvironment environment, IRosterService rosterService, IMemberService memberService)
         {
             _hostingEnvironment = environment;
             _rosterService = rosterService;
             _memberService = memberService;
-            _response = new ResponseVM();
+            _response = new ResponseVM<RosterVM>();
         }
 
         // GET api/roster
         [HttpGet]
-        public ActionResult<IEnumerable<RosterVM>> Get()
+        public ActionResult<ResponseVM<RosterVM>> Get()
         {
 
             var roster = _rosterService.GetAll().ToList();
             var result = Mapper.Map<List<RosterVM>>(roster);
-      
-            return Ok(result);
+
+            _response.Token = JwtService.GetUpdatedJwt();
+            _response.Payload = result;
+            return Ok(_response);
         }
 
         // GET api/roster/5
@@ -75,8 +77,9 @@ namespace BeerRosterAPI.Controllers
             var beerRoster = scheduler.CreateRoster(members, lastRosteredDate, int.Parse(numberOfCycles["cycle"].Value.ToString()));
             _rosterService.Save(beerRoster);
             var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            _response.Token = jwtToken;
 
-            return Ok(jwtToken);
+            return Ok(_response);
         }
 
         // POST api/roster/create
@@ -106,8 +109,8 @@ namespace BeerRosterAPI.Controllers
             _rosterService.Save(beerRoster);
             var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
-
-            return Ok(jwtToken);
+            _response.Token = jwtToken;
+            return Ok(_response);
         }
 
         // PUT api/roster/5
@@ -124,8 +127,9 @@ namespace BeerRosterAPI.Controllers
 
             _rosterService.Update(updateRoster);
             var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
+            _response.Token = jwtToken;
 
-            return Ok(jwtToken);
+            return Ok(_response);
         }
 
         // DELETE api/roster/5
@@ -136,7 +140,8 @@ namespace BeerRosterAPI.Controllers
             _rosterService.Delete(deleteRoster);
 
             var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            return Ok(jwtToken);
+            _response.Token = jwtToken;
+            return Ok(_response);
         }
     }
 }

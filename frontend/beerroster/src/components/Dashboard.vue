@@ -51,6 +51,7 @@
         roster: [],    
       }
     },
+    
     beforeMount() {
       if (!this.$store.getters.isUserLoggedIn) {
             // this.$router.push('/login');
@@ -60,7 +61,8 @@
         this.axios.get(uri)
           .then((response) => {
             this.error = false;      
-            this.roster = response.data;
+            this.roster = response.data.payload;
+            window.localStorage.setItem('jwtToken', response.data.token);
           })
           .catch((error) => {
             this.error = true;
