@@ -1,7 +1,7 @@
 <template>
  <v-footer :fixed="fixed" app>
     <img src="@/assets/logo.png" alt="Vuetify.js" class="vue-img">
-    <span>Vue Cheers Company &copy; {{new Date().getFullYear()}}</span>
+    <span>The Beer Company &copy; {{new Date().getFullYear()}}</span>
     <v-spacer></v-spacer>
     <blockquote >
       &#8220;First, solve the problem then write the code.&#8221;

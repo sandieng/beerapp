@@ -34,6 +34,13 @@
 
         // Ensure user is logged in and the token has not expired
         let token =  window.localStorage.getItem('jwtToken');
+
+        if (!token) {
+          this.$router.push('/Login');
+     
+          return;
+        }
+
         let jwtToken = VueJwtDecode.decode(token);
         let utc = moment.utc().valueOf();
         let expiredTime = moment.utc(jwtToken.expiryToken).valueOf();
