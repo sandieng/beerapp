@@ -4,15 +4,32 @@ axios.interceptors.request.use(function(config) {
   
     const token = window.localStorage.getItem('jwtToken');
     if (token) {
-      config.headers.Authorization = token;
+      // config.headers.Authorization = token;
+    config.headers.Authorization = 'Bearer ' + token;
     }
   
     return config;
   })
 
 const memberService = {
-  save(memberDetails) {
+  signup(memberDetails) {
     let url = 'http://localhost:60908/api/member/signup';
+
+    //let payloadWithToken = this.attachToken(memberDetails);
+
+    return new Promise((resolve, reject) => {
+      axios.post(url, memberDetails)
+      .then((response) => {
+        resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    })
+  },
+
+  save(memberDetails) {
+    let url = 'http://localhost:60908/api/member/add';
 
     //let payloadWithToken = this.attachToken(memberDetails);
 

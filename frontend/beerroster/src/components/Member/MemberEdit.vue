@@ -113,7 +113,6 @@
 
         emailService.search(this.email)
            .then((response) => {
-            window.localStorage.setItem('jwtToken', response.data.token);
             this.showSnackbar = true;
             this.showInfo = 'Member\'s data retrieved.';
             this.id = response.data.payload[0].id;
@@ -136,15 +135,14 @@
       updateMember() {
         let member = {id: this.id, firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password, dateJoined: this.dateJoined, isActive: this.isActive};
         memberService.update(member)
-          .then((response) => {
-              window.localStorage.setItem('jwtToken', response.data.token);
+          .then(() => {
               this.showSnackbar = true;      
               this.showInfo = 'Member\'s data updated.';
               this.alreadySaved = true;
             })
-            .catch((showSnackbar) => {
+            .catch((error) => {
               this.showSnackbar = true;
-              this.showInfo = showSnackbar.response.data.message;
+              this.showInfo = error.response.data.message;
             });
       },
     },

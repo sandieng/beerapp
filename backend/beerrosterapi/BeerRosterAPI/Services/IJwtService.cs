@@ -1,17 +1,12 @@
-﻿using BeerRosterAPI.Entities;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 
 namespace BeerRosterAPI.Services
 {
     public interface IJwtService
     {
-        IOrderedQueryable<Roster> GetAll();
-        Roster GetById(int id);
-        Roster GetByEmail(string email);
-        void Save(Roster roster);
-        void Save(List<Roster> roster);
-        void Update(Roster roster);
-        void Delete(Roster roster);
+        string GenerateJwt(string userName);
+        string UpdateJwt(string bearerToken);
+        JwtSecurityToken DecodeJwt(string token);
+        string GetUpdatedJwt();
     }
 }

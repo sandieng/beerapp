@@ -2,6 +2,7 @@
 using BeerRosterAPI.Entities;
 using BeerRosterAPI.Services;
 using BeerRosterAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Linq;
 
 namespace BeerRosterAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowSpecificOrigin")]
@@ -18,13 +20,15 @@ namespace BeerRosterAPI.Controllers
     {
         private IHostingEnvironment _hostingEnvironment;
         private IMemberService _memberService;
+        private IJwtService _jwtService;
         private ResponseVM<MemberVM> _response;
             
 
-        public MemberController(IHostingEnvironment environment, IMemberService memberService)
+        public MemberController(IHostingEnvironment environment, IMemberService memberService, IJwtService jwtService)
         {
             _hostingEnvironment = environment;
             _memberService = memberService;
+            _jwtService = jwtService;
             _response = new ResponseVM<MemberVM>();
         }
 
@@ -35,9 +39,6 @@ namespace BeerRosterAPI.Controllers
         {
             var members = _memberService.GetAll().ToList();
             var results = Mapper.Map<List<MemberVM>>(members);
-            // var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            var jwtToken = JwtService.GetUpdatedJwt();
-            _response.Token = jwtToken;
             _response.Payload = results;
             return Ok(_response);
         }
@@ -51,12 +52,7 @@ namespace BeerRosterAPI.Controllers
             var result = Mapper.Map<MemberVM>(foundMember);
             if (foundMember != null)
             {
-                // var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-
-                //result.Token = jwtToken.ToString();
-                var jwtToken = JwtService.GetUpdatedJwt();
                 _response.Payload = new List<MemberVM> { result };
-                _response.Token = jwtToken.ToString();
                 return Ok(_response);
             }
 
@@ -65,6 +61,8 @@ namespace BeerRosterAPI.Controllers
         }
 
         // POST api/member
+
+        [AllowAnonymous]
         [HttpPost]
         [Route("signup")]
         public ActionResult Signup([FromBody] MemberVM member)
@@ -86,13 +84,14 @@ namespace BeerRosterAPI.Controllers
             var newMember = Mapper.Map<Member>(member);
             _memberService.Save(newMember);
 
-            var jwtToken = JwtService.GenerateJwt(member.Email);
+            var jwtToken = _jwtService.GenerateJwt(member.Email);
             _response.Token = jwtToken;
 
             return Ok(_response);
         }
 
         // POST api/member
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
         public ActionResult Login([FromBody] LoginVM member)
@@ -101,13 +100,39 @@ namespace BeerRosterAPI.Controllers
 
             if (found != null && found.Password == member.Password)
             {
-                var jwtToken = JwtService.GenerateJwt(member.Email);
+                var jwtToken = _jwtService.GenerateJwt(member.Email);
                 _response.Token = jwtToken;
+
                 return Ok(_response);
             }
 
             _response.Message = "Invalid email or password";
             return NotFound(_response);
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public ActionResult Add([FromBody] MemberVM member)
+        {
+            if (!ModelState.IsValid)
+            {
+                _response.Message = "Please provide all required data for sign up.";
+                return BadRequest(_response);
+            }
+
+            var foundMember = _memberService.GetByEmail(member.Email);
+
+            if (foundMember != null)
+            {
+                _response.Message = "User has already signed up.";
+                return BadRequest(_response);
+            }
+
+            var newMember = Mapper.Map<Member>(member);
+            _memberService.Save(newMember);
+
+
+            return Ok(_response);
         }
 
         // PUT api/member/5
@@ -117,9 +142,7 @@ namespace BeerRosterAPI.Controllers
             var updateMember = Mapper.Map<Member>(member);
             _memberService.Update(updateMember);
 
-            //var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            var jwtToken = JwtService.GetUpdatedJwt();
-            _response.Token = jwtToken;
+
             return Ok(_response);
         }
 
@@ -136,9 +159,6 @@ namespace BeerRosterAPI.Controllers
 
             _memberService.Update(currentMember);
 
-            //var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            var jwtToken = JwtService.GetUpdatedJwt();
-            _response.Token = jwtToken;
             return Ok(_response);
         }
 

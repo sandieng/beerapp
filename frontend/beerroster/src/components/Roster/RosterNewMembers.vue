@@ -48,9 +48,7 @@
       methods: {
         createRoster() {
             rosterService.createForNewMembers()
-             .then((response) => {
-                window.localStorage.setItem('jwtToken', response.data);
-
+             .then(() => {
                 this.showSnackbar = true; 
                 this.showInfo = 'Beer roster created successful for new members.';
                 this.$router.push('/dashboard');

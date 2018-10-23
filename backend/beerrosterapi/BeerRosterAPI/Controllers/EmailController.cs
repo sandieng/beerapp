@@ -37,7 +37,7 @@ namespace BeerRosterAPI.Controllers
             }
 
             var result = await _emailService.Send(email);
-            _response.Token = JwtService.GetUpdatedJwt();
+
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 return Ok(_response);
 

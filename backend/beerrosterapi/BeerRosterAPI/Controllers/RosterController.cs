@@ -4,6 +4,7 @@ using BeerRosterAPI.DTOs;
 using BeerRosterAPI.Entities;
 using BeerRosterAPI.Services;
 using BeerRosterAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using System.Linq;
 
 namespace BeerRosterAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowSpecificOrigin")]
@@ -40,7 +42,6 @@ namespace BeerRosterAPI.Controllers
             var roster = _rosterService.GetAll().ToList();
             var result = Mapper.Map<List<RosterVM>>(roster);
 
-            _response.Token = JwtService.GetUpdatedJwt();
             _response.Payload = result;
             return Ok(_response);
         }
@@ -76,8 +77,6 @@ namespace BeerRosterAPI.Controllers
             var scheduler = new Scheduler();
             var beerRoster = scheduler.CreateRoster(members, lastRosteredDate, int.Parse(numberOfCycles["cycle"].Value.ToString()));
             _rosterService.Save(beerRoster);
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            _response.Token = jwtToken;
 
             return Ok(_response);
         }
@@ -107,9 +106,7 @@ namespace BeerRosterAPI.Controllers
             var scheduler = new Scheduler();
             var beerRoster = scheduler.CreateRoster(newMembers, lastRosteredDate);
             _rosterService.Save(beerRoster);
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
 
-            _response.Token = jwtToken;
             return Ok(_response);
         }
 
@@ -126,8 +123,6 @@ namespace BeerRosterAPI.Controllers
             };
 
             _rosterService.Update(updateRoster);
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            _response.Token = jwtToken;
 
             return Ok(_response);
         }
@@ -139,8 +134,6 @@ namespace BeerRosterAPI.Controllers
             var deleteRoster = _rosterService.GetById(id);
             _rosterService.Delete(deleteRoster);
 
-            var jwtToken = JwtService.UpdateJwt(Request.Headers["Authorization"]);
-            _response.Token = jwtToken;
             return Ok(_response);
         }
     }

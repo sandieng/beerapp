@@ -86,9 +86,7 @@
       saveMember() {
         let member = {firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password, dateJoined: this.dateJoined};
         memberService.save(member)
-          .then((response) => {
-            window.localStorage.setItem('jwtToken', response.data.token);
-
+          .then(() => {
             this.showSnackbar = true;
             this.showInfo = 'New member added successfully.'
           })
@@ -100,9 +98,7 @@
         // Send welcome email
         let email = {toEmail: 'targetEmail@beerlover.com.au', subject: 'Hi new member', message: 'Welcome to Beer Roster'};
         emailService.send(email)
-         .then((response) => {
-            window.localStorage.setItem('jwtToken', response.data.token);
-
+         .then(() => {
             this.showSnackbar = true;
             this.showInfo = 'Welcome email sent to the new member successfully.'
           })

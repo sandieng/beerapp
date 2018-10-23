@@ -144,7 +144,7 @@
         if (ok) {
           rosterService.delete(roster.id)
             .then((response) => {
-                window.localStorage.setItem('jwtToken', response.data.token);
+                // window.localStorage.setItem('jwtToken', response.data.token);
 
                 this.showSnackbar = true;      
                 this.showInfo = 'Roster\'s deleted.';
@@ -163,28 +163,24 @@
           // Update change in the backend
           let member = {id: this.editedItem.memberID, firstName: this.editedItem.firstName, lastName: this.editedItem.lastName, dateJoined: this.editedItem.dateJoined};
           memberService.update(member)
-           .then((response) => {
-                window.localStorage.setItem('jwtToken', response.data.token);
-
+           .then(() => {
                 this.showSnackbar = true;      
                 this.showInfo = 'Member\'s data updated.';
               })
-              .catch((showSnackbar) => {
+              .catch((error) => {
                 this.showSnackbar = true;
-                this.showInfo = showSnackbar.response.data.message;
+                this.showInfo = error.response.data.message;
               });
 
           let roster = {id: this.editedItem.id, memberID: this.editedItem.memberID, rosteredDate: this.editedItem.rosteredDate};
           rosterService.update(roster)
-            .then((response) => {
-                window.localStorage.setItem('jwtToken', response.data.token);
-
+            .then(() => {
                 this.showSnackbar = true;      
                 this.showInfo = 'Roster\'s data updated.';
               })
-              .catch((showSnackbar) => {
+              .catch((error) => {
                 this.showSnackbar = true;
-                this.showInfo = showSnackbar.response.data.message;
+                this.showInfo = error.response.data.message;
               });
         } else {
           this.rosterList.push(this.editedItem);

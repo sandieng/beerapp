@@ -46,7 +46,9 @@ namespace BeerRosterAPI.Services
                 }
 
 
-                var jwtToken = JwtService.DecodeJwt(authHeader);
+                var jwtService = context.RequestServices.GetService(typeof(IJwtService)) as IJwtService;
+
+                var jwtToken = jwtService.DecodeJwt(authHeader);
                 var userName = jwtToken.Payload["userName"].ToString();
 
                 if (!string.IsNullOrEmpty(userName))
@@ -59,7 +61,7 @@ namespace BeerRosterAPI.Services
                     if (memberExist != null)
                     {
                         // Extend the token expiry
-                        var extendedToken = JwtService.UpdateJwt(authHeader);
+                        var extendedToken = jwtService.UpdateJwt(authHeader);
                         var keyValue = new KeyValuePair<string, StringValues>("jwtToken", extendedToken);
                         context.Response.Headers.Add(keyValue);
                         await _next(context);

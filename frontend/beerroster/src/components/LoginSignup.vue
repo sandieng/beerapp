@@ -165,7 +165,7 @@
 
           //let uri = 'http://localhost:60908/api/member/signup';
           let signup = {firstName: this.firstName, lastName: this.lastName, email: this.email, password: this.password};
-          memberService.save(signup)
+          memberService.signup(signup)
             .then((response) => {
             window.localStorage.setItem('jwtToken', response.data.token);
 
