@@ -1,5 +1,6 @@
 ﻿using BeerRosterAPI.Services;
 using BeerRosterAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BeerRosterAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowSpecificOrigin")]
@@ -38,7 +40,7 @@ namespace BeerRosterAPI.Controllers
 
             var result = await _emailService.Send(email);
 
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            if (result.StatusCode == System.Net.HttpStatusCode.Accepted)
                 return Ok(_response);
 
             return BadRequest(_response);
