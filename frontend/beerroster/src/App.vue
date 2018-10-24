@@ -7,8 +7,7 @@
 </template>
 
 <script>
-  import VueJwtDecode from 'vue-jwt-decode';
-  import moment from 'moment';
+  import jwtService from '@/services/jwtService';
 
   import NavigationBar from './components/NavigationBar';
   import FooterBar from './components/Footer';
@@ -27,27 +26,32 @@
       '$route'(to, from) {
         // Ensure user is logged in
         if (!this.$store.getters.isUserLoggedIn) {
-          this.$router.push('/Login');
+          this.$store.dispatch('logout', this.$router);
      
           return;
         }
 
         // Ensure user is logged in and the token has not expired
-        let token =  window.localStorage.getItem('jwtToken');
+        //let token =  window.localStorage.getItem('jwtToken');
+        let token = jwtService.getJwtToken();
 
         if (!token) {
-          this.$router.push('/Login');
+          this.$store.dispatch('logout', this.$router);
      
           return;
         }
 
-        let jwtToken = VueJwtDecode.decode(token);
-        let utc = moment.utc().valueOf();
-        let expiredTime = moment.utc(jwtToken.expiryToken).valueOf();
-        if (expiredTime < utc)
-        {
-          this.$store.dispatch('logout');
-          this.$router.push('/Login');
+        // let jwtToken = VueJwtDecode.decode(token);
+        // let unixTimestamp = moment().unix();
+        // let expiredTime = moment.utc(jwtToken.exp).valueOf();
+        // if (expiredTime < unixTimestamp)
+        // {
+        //   this.$store.dispatch('logout');
+        //   this.$router.push('/Login');
+        //   return;
+        // }
+        if (jwtService.tokenHasExpired(token)) {
+          this.$store.dispatch('logout', this.$router);
           return;
         }
       }

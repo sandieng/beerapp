@@ -78,8 +78,8 @@
 </template>
 
 <script>
-  import memberService from './../../services/memberService'
-  import emailService from './../../services/emailService'
+  import memberService from './../../services/memberService';
+  import emailService from './../../services/emailService';
 
   export default {
     name: 'MemberEdit',
@@ -148,12 +148,18 @@
     },
     
     created() {
-      // Centralised user login in App.vue
-      
-      // if (!this.$store.getters.isUserLoggedIn) {
-      //   this.$router.push('/Login');
-      //   return;
-      // }
+      // Page is created through navigation or F5
+      // If the page is refreshed through F5, the Vuex state is lost
+      // The effect of that is that the user is no longer logged in despite the token has not expired
+      // We will resintate the state here
+      var jwtToken = jwtService.getJwtToken();
+      if (!jwtService.tokenHasExpired(jwtToken)) {
+        // Reestablished user's
+        this.$store.dispatch('login');
+      } else {
+        this.$store.dispatch('logout', this.$router);
+        return;
+      }
     },
 
     beforeRouteLeave(to, from, next) {

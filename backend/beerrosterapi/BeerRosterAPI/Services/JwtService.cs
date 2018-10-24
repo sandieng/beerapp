@@ -10,7 +10,7 @@ namespace BeerRosterAPI.Services
     public class JwtService : IJwtService
     {
         private const string _key = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
-        private const int _tokenValidityInMinute = 10;
+        private const int _tokenValidityInMinute = 1;
         private static string _updatedJwtToken = "";
         private static IConfiguration _configuration;
 
@@ -21,7 +21,6 @@ namespace BeerRosterAPI.Services
 
         public string GenerateJwt(string userName)
         {
-
 
             //// Create Security key  using private key above:
             //// not that latest version of JWT using Microsoft namespace instead of System
@@ -38,8 +37,8 @@ namespace BeerRosterAPI.Services
             // //Some PayLoad that contain information about the  customer
             // var payload = new JwtPayload
             // {
-            //    { "userName", userName},
-            //    { "expiryToken", DateTime.UtcNow.AddMinutes(_tokenValidityInMinute)},
+            //    { "unique_name", userName},
+            //    { "exp", DateTime.UtcNow.AddMinutes(_tokenValidityInMinute)},
             // };
 
             // //
@@ -75,7 +74,7 @@ namespace BeerRosterAPI.Services
             if (bearerToken != null)
             {
                 var decodedToken = DecodeJwt(bearerToken);
-                var userName = decodedToken.Payload["userName"].ToString();
+                var userName = decodedToken.Payload["unique_name"].ToString();
                 var updatedToken = GenerateJwt(userName);
 
                 return updatedToken;
@@ -86,10 +85,22 @@ namespace BeerRosterAPI.Services
 
         public JwtSecurityToken DecodeJwt(string token)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var reversedToken = handler.ReadToken(token);
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                if (token.ToLower().Contains("bearer"))
+                {
+                    token = token.Substring(7);
+                }
+                var reversedToken = handler.ReadToken(token);
 
-            return (JwtSecurityToken) reversedToken;
+                return (JwtSecurityToken)reversedToken;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
         public string GetUpdatedJwt()

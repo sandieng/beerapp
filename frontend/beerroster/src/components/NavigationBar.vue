@@ -74,8 +74,8 @@
           this.$router.push('/Login');
         } else {
           //this.$store.commit('logout');
-          this.$store.dispatch('logout');
-          this.$router.push('/Welcome');
+          this.$store.dispatch('logout', this.$router);
+          //this.$router.push('/Welcome');
         }
       },
       goDashboard() {

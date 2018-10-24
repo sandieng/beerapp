@@ -71,8 +71,8 @@
 </template>
 
 <script>
-  import loginService from './../services/loginService'
-  import memberService from './../services/memberService'
+  import loginService from './../services/loginService';
+  import memberService from './../services/memberService';
 
   export default {
       name: "LoginSignup",

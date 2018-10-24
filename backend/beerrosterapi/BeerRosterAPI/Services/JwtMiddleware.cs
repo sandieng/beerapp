@@ -49,7 +49,7 @@ namespace BeerRosterAPI.Services
                 var jwtService = context.RequestServices.GetService(typeof(IJwtService)) as IJwtService;
 
                 var jwtToken = jwtService.DecodeJwt(authHeader);
-                var userName = jwtToken.Payload["userName"].ToString();
+                var userName = jwtToken.Payload["unique_name"].ToString();
 
                 if (!string.IsNullOrEmpty(userName))
                 {

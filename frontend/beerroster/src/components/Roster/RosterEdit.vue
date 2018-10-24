@@ -71,8 +71,8 @@
 
 
 <script>
-  import rosterService from './../../services/rosterService'
-  import memberService from './../../services/memberService'
+  import rosterService from './../../services/rosterService';
+  import memberService from './../../services/memberService';
 
 
   export default {
@@ -109,8 +109,23 @@
       }
     },
 
+    created() {
+      // Page is created through navigation or F5
+      // If the page is refreshed through F5, the Vuex state is lost
+      // The effect of that is that the user is no longer logged in despite the token has not expired
+      // We will resintate the state here
+      var jwtToken = jwtService.getJwtToken();
+      if (!jwtService.tokenHasExpired(jwtToken)) {
+        // Reestablished user's
+        this.$store.dispatch('login');
+      } else {
+        this.$store.dispatch('logout', this.$router);
+        return;
+      }
+    },
+
     //cool, awesome I like BEER "awe super dooper cold ( I like cold stuff like icy pole, " yummy" ). Plus West Coast Eagles won the grand finals.
-     created() {
+     beforeMount() {
        // Centralised user login in App.vue
       
       // if (!this.$store.getters.isUserLoggedIn) {

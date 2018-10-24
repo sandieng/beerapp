@@ -16,8 +16,10 @@ export default new Vuex.Store({
     login: (context) => {
       context.commit('login');
     },
-    logout: (context) => {
+    logout: (context, router) => {
+      window.localStorage.removeItem('jwtToken');
       context.commit('logout');
+      router.push('/Login');
     }
   },
   mutations: {
