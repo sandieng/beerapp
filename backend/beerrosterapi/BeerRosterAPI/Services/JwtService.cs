@@ -10,7 +10,7 @@ namespace BeerRosterAPI.Services
     public class JwtService : IJwtService
     {
         private const string _key = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
-        private const int _tokenValidityInMinute = 1;
+        private const int _tokenValidityInMinute = 30;
         private static string _updatedJwtToken = "";
         private static IConfiguration _configuration;
 

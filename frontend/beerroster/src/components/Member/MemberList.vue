@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import jwtService from '@/services/jwtService';
   import memberService from './../../services/memberService';
 
   export default {

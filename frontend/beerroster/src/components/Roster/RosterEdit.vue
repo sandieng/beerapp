@@ -71,9 +71,9 @@
 
 
 <script>
+  import jwtService from '@/services/jwtService';
   import rosterService from './../../services/rosterService';
   import memberService from './../../services/memberService';
-
 
   export default {
     name: 'RosterEdit',
@@ -136,7 +136,7 @@
       rosterService.list()
          .then((response) => {
           this.error = false;      
-          this.rosterList = response.data;
+          this.rosterList = response.data.payload;
         })
         .catch((error) => {
           this.error = true;
